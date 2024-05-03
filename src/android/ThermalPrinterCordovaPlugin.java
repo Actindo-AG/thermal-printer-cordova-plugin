@@ -76,13 +76,8 @@ public class ThermalPrinterCordovaPlugin extends CordovaPlugin {
         DeviceConnection deviceConnection = this.getPrinterConnection(callbackContext, data);
         EscPosPrinterCommands EscPosPrinterCommands = new EscPosPrinterCommands(deviceConnection, new EscPosCharsetEncoding("windows-1252", 16));
         try {
-            EscPosPrinterCommands.openCashBox();
-        new EscPosPrinter(
-                EscPosPrinterCommands,
-                data.optInt("printerDpi", 203),
-                (float) data.optDouble("printerWidthMM", 48f),
-                data.optInt("printerNbrCharactersPerLine", 32)
-            );
+            EscPosPrinterCommands.connect();
+            EscPosPrinterCommands.openCashBox();      
         } catch (Exception e) {
             callbackContext.error(new JSONObject(new HashMap<String, Object>() {{
                 put("error", e.getMessage());
