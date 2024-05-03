@@ -55,7 +55,7 @@ public class ThermalPrinterCordovaPlugin extends CordovaPlugin {
                     ThermalPrinterCordovaPlugin.this.printFormattedText(callbackContext, action, args.getJSONObject(0));
                 } else if (action.equals("getEncoding")) {
                     ThermalPrinterCordovaPlugin.this.getEncoding(callbackContext, args.getJSONObject(0));
-                } else if (action.equals("openCashBox") {
+                } else if (action.equals("openCashBox")) {
                     ThermalPrinterCordovaPlugin.this.openCashBox(callbackContext, args.getJSONObject(0));
                 } else if (action.equals("disconnectPrinter")) {
                     ThermalPrinterCordovaPlugin.this.disconnectPrinter(callbackContext, args.getJSONObject(0));
