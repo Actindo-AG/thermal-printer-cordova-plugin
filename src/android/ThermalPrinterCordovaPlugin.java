@@ -25,6 +25,7 @@ import com.dantsu.escposprinter.connection.usb.UsbConnection;
 import com.dantsu.escposprinter.connection.usb.UsbConnections;
 import com.dantsu.escposprinter.exceptions.EscPosConnectionException;
 import com.dantsu.escposprinter.textparser.PrinterTextParserImg;
+import com.dantsu.escposprinter.EscPosPrinterCommands;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
@@ -54,6 +55,8 @@ public class ThermalPrinterCordovaPlugin extends CordovaPlugin {
                     ThermalPrinterCordovaPlugin.this.printFormattedText(callbackContext, action, args.getJSONObject(0));
                 } else if (action.equals("getEncoding")) {
                     ThermalPrinterCordovaPlugin.this.getEncoding(callbackContext, args.getJSONObject(0));
+                } else if (action.equals("openCashBox") {
+                    ThermalPrinterCordovaPlugin.this.openCashBox(callbackContext, args.getJSONObject(0));
                 } else if (action.equals("disconnectPrinter")) {
                     ThermalPrinterCordovaPlugin.this.disconnectPrinter(callbackContext, args.getJSONObject(0));
                 } else if (action.equals("requestPermissions")) {
@@ -69,6 +72,26 @@ public class ThermalPrinterCordovaPlugin extends CordovaPlugin {
         return true;
     }
 
+    private void openCashBox(CallbackContext callbackContext, JSONObject data) throws JSONException {
+        DeviceConnection deviceConnection = this.getPrinterConnection(callbackContext, data);
+        EscPosPrinterCommands EscPosPrinterCommands = new EscPosPrinterCommands(deviceConnection, new EscPosCharsetEncoding("windows-1252", 16));
+        try {
+            EscPosPrinterCommands.openCashBox();
+        new EscPosPrinter(
+                EscPosPrinterCommands,
+                data.optInt("printerDpi", 203),
+                (float) data.optDouble("printerWidthMM", 48f),
+                data.optInt("printerNbrCharactersPerLine", 32)
+            );
+        } catch (Exception e) {
+            callbackContext.error(new JSONObject(new HashMap<String, Object>() {{
+                put("error", e.getMessage());
+            }}));
+            throw new JSONException(e.getMessage());
+        }
+        callbackContext.success();
+    }
+        
     private void bitmapToHexadecimalString(CallbackContext callbackContext, JSONObject data) throws JSONException {
         String encodedString = data.getString("base64");
         byte[] decodedString = Base64.decode(encodedString.contains(",")
